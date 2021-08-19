@@ -115,7 +115,6 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   }
 
   _handleSubmit(String texto) {
-
     if (texto.length == 0) return;
     _textController.clear();
     _focusNode.requestFocus();
@@ -128,5 +127,13 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     _messages.insert(0, newMessage);
     newMessage.animationController.forward();
     setState(() => _estaEscribiendo = false);
+  }
+
+  @override
+  void dispose() {
+    for (ChatMessage message in _messages) {
+      message.animationController.dispose();
+    }
+    super.dispose();
   }
 }
