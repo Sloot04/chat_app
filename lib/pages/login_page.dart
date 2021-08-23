@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
+import 'package:chat_app/services/auth_service.dart';
 import 'package:chat_app/widgets/custom_input.dart';
 import 'package:chat_app/widgets/custom_logo.dart';
 import 'package:chat_app/widgets/custom_labels.dart';
@@ -19,9 +21,15 @@ class LoginPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Logo(titulo: 'Messenger',),
+                Logo(
+                  titulo: 'Messenger',
+                ),
                 _Form(),
-                Labels(ruta: 'register', titulo: 'Crea una ahora!', subtitulo: '¿No tienes cuenta?',),
+                Labels(
+                  ruta: 'register',
+                  titulo: 'Crea una ahora!',
+                  subtitulo: '¿No tienes cuenta?',
+                ),
                 Text(
                   'Términos y condiciones de uso',
                   style: TextStyle(fontWeight: FontWeight.w200),
@@ -48,6 +56,7 @@ class __FormState extends State<_Form> {
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
     return Container(
       margin: EdgeInsets.only(top: 40),
       padding: EdgeInsets.symmetric(horizontal: 50),
@@ -67,11 +76,15 @@ class __FormState extends State<_Form> {
             keyboardType: TextInputType.emailAddress,
           ),
           BotonAzul(
-            onPressed: () {
-              print(emailCtrl.text);
-              print(passCtrl.text);
-            },
             text: 'Ingrese',
+            onPressed: authService.autenticando
+                ? () => {}
+                : () {
+                    FocusScope.of(context).unfocus();
+
+                    authService.login(
+                        emailCtrl.text.trim(), passCtrl.text.trim());
+                  },
           ),
         ],
       ),
