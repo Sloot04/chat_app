@@ -78,12 +78,12 @@ class __FormState extends State<_Form> {
           BotonAzul(
             text: 'Ingrese',
             onPressed: authService.autenticando
-                ? () => {}
+                ? null
                 : () {
                     FocusScope.of(context).unfocus();
 
                     authService.login(
-                        emailCtrl.text.trim(), passCtrl.text.trim());
+                        emailCtrl.text.trim(), passCtrl.text);
                   },
           ),
         ],
