@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import 'package:chat_app/services/auth_service.dart';
+
+import 'package:chat_app/helpers/mostrar_alerta.dart';
 import 'package:chat_app/widgets/custom_input.dart';
 import 'package:chat_app/widgets/custom_logo.dart';
 import 'package:chat_app/widgets/custom_labels.dart';
@@ -79,11 +81,18 @@ class __FormState extends State<_Form> {
             text: 'Ingrese',
             onPressed: authService.autenticando
                 ? null
-                : () {
+                : () async {
                     FocusScope.of(context).unfocus();
 
-                    authService.login(
+                    final loginOk = await authService.login(
                         emailCtrl.text.trim(), passCtrl.text);
+
+                    if (loginOk) {
+                      //navegar a otra pantalla
+                    } else {
+                      mostrarAlerta(context, 'Login incorrecto',
+                          'Revise sus credenciales');
+                    }
                   },
           ),
         ],
