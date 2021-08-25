@@ -10,7 +10,7 @@ String usuarioToJson(Usuario data) => json.encode(data.toJson());
 
 class Usuario {
   Usuario({
-    required this.online,
+    this.online = false,
     required this.nombre,
     required this.email,
     required this.uid,

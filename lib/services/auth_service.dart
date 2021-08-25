@@ -70,6 +70,28 @@ class AuthService with ChangeNotifier {
     }
   }
 
+  Future register(String nombre, String email, String password) async {
+    this.autenticando = true;
+    final data = {'nombre': nombre, 'email': email, 'password': password};
+    final uri = Uri.parse('${Environment.apiUrl}/login/new');
+
+    final resp = await http.post(uri,
+        body: jsonEncode(data), headers: {'Content-Type': 'application/json'});
+
+    print(resp.body);
+    this.autenticando = false;
+    if (resp.statusCode == 200) {
+      final loginResponse = loginResponseFromJson(resp.body);
+      this.usuario = loginResponse.usuario;
+       await _guardarToken(loginResponse.token);
+
+      return true;
+    } else {
+      final respBody = jsonDecode(resp.body);
+      return respBody['msg'];
+    }
+  }
+
   Future<SharedPreferences> _initialPreferences() async =>
       _preferences = await SharedPreferences.getInstance();
 
