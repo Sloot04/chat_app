@@ -93,7 +93,7 @@ class __FormState extends State<_Form> {
                       Navigator.pushReplacementNamed(context, 'usuarios');
                     } else {
                       mostrarAlerta(context, 'Registro incorrecto',
-                          registroOk);
+                          registroOk == null ? 'Complete los campos' : registroOk);
                     }
                   },
           ),
