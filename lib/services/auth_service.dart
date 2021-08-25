@@ -44,6 +44,8 @@ class AuthService with ChangeNotifier {
     await _initialPreferences();
 
     _preferences.remove('token');
+    //Setea un nuevo token para que no sea null;
+    _preferences.setString('token', 'tokenFalso');
   }
 
   Future<bool> login(String email, String password) async {
@@ -56,7 +58,6 @@ class AuthService with ChangeNotifier {
     final resp = await http.post(uri,
         body: jsonEncode(data), headers: {'Content-Type': 'application/json'});
 
-    print(resp.body);
     this.autenticando = false;
     if (resp.statusCode == 200) {
       final loginResponse = loginResponseFromJson(resp.body);
@@ -78,17 +79,35 @@ class AuthService with ChangeNotifier {
     final resp = await http.post(uri,
         body: jsonEncode(data), headers: {'Content-Type': 'application/json'});
 
-    print(resp.body);
     this.autenticando = false;
     if (resp.statusCode == 200) {
       final loginResponse = loginResponseFromJson(resp.body);
       this.usuario = loginResponse.usuario;
-       await _guardarToken(loginResponse.token);
+      await _guardarToken(loginResponse.token);
 
       return true;
     } else {
       final respBody = jsonDecode(resp.body);
       return respBody['msg'];
+    }
+  }
+
+  Future<bool> isLoggedIn() async {
+    final token = await getToken();
+
+    final uri = Uri.parse('${Environment.apiUrl}/login/renew');
+    final resp = await http.get(uri,
+        headers: {'Content-Type': 'application/json', 'x-token': token});
+
+    if (resp.statusCode == 200) {
+      final loginResponse = loginResponseFromJson(resp.body);
+      this.usuario = loginResponse.usuario;
+      await _guardarToken(loginResponse.token);
+
+      return true;
+    } else {
+      this.logout();
+      return false;
     }
   }
 
@@ -102,6 +121,6 @@ class AuthService with ChangeNotifier {
 
   Future<void> logout() async {
     await _initialPreferences();
-    await _preferences.clear();
+    await deleteToken();
   }
 }
