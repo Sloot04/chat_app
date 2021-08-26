@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-import 'package:chat_app/widgets/custom_input.dart';
-import 'package:chat_app/widgets/custom_logo.dart';
-import 'package:chat_app/widgets/custom_labels.dart';
-import 'package:chat_app/widgets/boton_azul.dart';
-import 'package:chat_app/services/auth_service.dart';
 import 'package:chat_app/helpers/mostrar_alerta.dart';
+import 'package:chat_app/services/auth_service.dart';
+import 'package:chat_app/services/socket_service.dart';
+import 'package:chat_app/widgets/boton_azul.dart';
+import 'package:chat_app/widgets/custom_input.dart';
+import 'package:chat_app/widgets/custom_labels.dart';
+import 'package:chat_app/widgets/custom_logo.dart';
 
 class RegisterPage extends StatelessWidget {
   @override
@@ -53,6 +54,8 @@ class __FormState extends State<_Form> {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context);
+      final socketService = Provider.of<SocketService>(context);
+      
     return Container(
       margin: EdgeInsets.only(top: 40),
       padding: EdgeInsets.symmetric(horizontal: 50),
@@ -88,7 +91,7 @@ class __FormState extends State<_Form> {
                         emailCtrl.text.trim(), passCtrl.text);
 
                     if (registroOk == true) {
-                      //conectar a nuestro socket server
+                      socketService.connect();
                       
                       Navigator.pushReplacementNamed(context, 'usuarios');
                     } else {
