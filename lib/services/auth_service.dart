@@ -29,6 +29,7 @@ class AuthService with ChangeNotifier {
         _preferences = await SharedPreferences.getInstance();
 
     await _initialPreferences();
+    //_preferences.setString('token', 'tokenFalso');
 
     final token = _preferences.getString('token');
 
